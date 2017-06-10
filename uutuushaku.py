@@ -31,24 +31,21 @@ class UutuusHaku():
     def haeKirjat( self ):
         # haetaan ja parsitaan uutuudet sivun html
         self.uutuudetSivu = self.haeSivu( self.url )
-        for elementti in self.käsitteleSivu():
+        for elementti in self.käsitteleLuetteloSivu():
             if elementti['tyyppi'] == 'kategoria':
                 self.kirjoita( elementti['kategoria'] )
         
             elif elementti['tyyppi'] == 'linkki':
-                self.kirjoita( elementti['kirja'] )
-                # ja haetaan kirjan tiedot sisältävä sivu
+                # haetaan kirjan tiedot sisältävä sivu
                 # parsitaan kirjan kuvauksen sisältävän sivun html
                 kirjaSivu = self.haeSivu( elementti['kirjaURL'] )
-                # kuvaus on sivun ensimmäisessä tekstikappaleessa
-                # otetaan talteen ja kirjoitetaan tiedostoon
-                kuvaus = kirjaSivu.p.get_text()
-                self.kirjoita( kuvaus )
+                kirjaTiedot = self.käsitteleKirjaSivu( kirjaSivu, elementti['kirjaURL'] )
+                self.kirjoita( kirjaTiedot )
     
         # valmista tuli, suljetaan tiedosto
         self.tiedosto.close()
         
-    def käsitteleSivu( self ):
+    def käsitteleLuetteloSivu( self ):
         # käydään sivun sisältö läpi elementti kerrallaan
         # lähtien ensimmäisestä kolmos tason ) otsikosta (h3, joka on sivun pääsisältö alueella
         # tarkemmin käsitellään ensimmäistä h3:a edeltävää elementtiä seuraavat saman tason elementit
@@ -62,14 +59,33 @@ class UutuusHaku():
                 
             elif elementti.name == 'p':
                 tulos = { 'tyyppi': 'linkki' }
-                # elementti on tekstikappale, jossa kirjan nimi, tekijä ja tunnus
-                # otetaan nämä tiedot talteen 
-                tulos['kirja'] = elementti.get_text()
-                # kappaleessa on myös linkki kirjan kuvauksen sisältävälle sivulle
+                # kappaleessa  on myös linkki kirjan kuvauksen sisältävälle sivulle
                 # otetaan osoite talteen
                 tulos['kirjaURL'] = elementti.a['href']
                 yield tulos
                         
+    def käsitteleKirjaSivu( self, kirjaSivu, url ):
+        # tallennetaan kirjan tiedot sanakirjaan
+        kirja = { 'url': url }
+        kirja['id'] = url.split( '/' )[-2]
+        # kirjan nimi on ensimmäisessä ykköstason otsikossa
+        kirja['nimi'] = kirjaSivu.h1.string.strip()
+        # kuvaus on sivun ensimmäisessä tekstikappaleessa
+        kirja['kuvaus'] = kirjaSivu.p.get_text()
+        taulukko = kirjaSivu.table
+        td = taulukko.find( 'td', text = 'Tekijä' )
+        if td != None:
+            kirja['tekijä'] = td.next_sibling.string
+            
+        else:
+            kirja['tekijä'] = ''
+            
+        pohja = '''{nimi} / {tekijä} {id}
+{url}
+
+{kuvaus}'''
+        return pohja.format( **kirja )
+        
 if __name__ == '__main__':
     haku = UutuusHaku( 'https://www.celianet.fi/kirjavinkit/uutuuskirjat-aikuisille/', 'uutuudet.txt' )
     haku.haeKirjat()
