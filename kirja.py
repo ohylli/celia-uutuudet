@@ -3,10 +3,18 @@
 class KirjaSivu():
     """docstring for KirjaSivu"""
     
-    pohja = '''{nimi} / {tekijä} {id}
+    pohja = '''{nimi} / {tekijä} {id} {tyyppiTiedot}
 {url}
 
 {kuvaus}'''
+
+    tyyppiPohjat = {
+        'äänikirja': '''
+lukija: {lukija}, kesto: {kesto}''',
+    'pistekirja': '''
+{pisteTiedot}''',
+    'elektroninen': ''
+    }
     
     def __init__( self, sivu, url ):
         self.sivu = sivu
@@ -22,6 +30,25 @@ class KirjaSivu():
         # kuvaus on sivun ensimmäisessä tekstikappaleessa
         kirja['kuvaus'] = self.sivu.p.get_text()
         kirja['tekijä'] = self.haeTaulukosta( 'Tekijä', '' )
+        ulkoasu = self.haeTaulukosta( 'Ulkoasu' )
+        tyyppi, tyyppiTiedot = ulkoasu.split( maxsplit = 1 )
+        
+        if tyyppi == 'äänikirja' or tyyppi == 'DaisyTrio':
+            tyyppi = 'äänikirja'
+            kirja['lukija'] = self.haeTaulukosta( 'Lukija', 'ei tiedossa' )
+            kirja['kesto'] = self.haeTaulukosta( 'Kesto', 'ei tiedossa' )
+            
+        elif tyyppi == 'pistekirja':
+            kirja['pisteTiedot'] = tyyppiTiedot[1:-1]
+            
+        elif tyyppi == 'elektroninen':
+            pass
+            
+        else:
+            print( 'Tuntematon kirjan tyyppi ' +tyyppi )
+            quit()
+            
+        kirja['tyyppiTiedot'] = self.tyyppiPohjat[tyyppi].format( **kirja )
         return self.pohja.format( **kirja )
         
     def haeTaulukosta( self, tieto, oletus = None ):
