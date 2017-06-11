@@ -5,6 +5,8 @@ import requests
 # kirjasto HTML:n parsimiseen
 from bs4 import BeautifulSoup
 
+from kirja import KirjaSivu
+
 class UutuusHaku():
     
     def __init__( self, luetteloUrl, tiedostonimi ):
@@ -39,7 +41,7 @@ class UutuusHaku():
                 # haetaan kirjan tiedot sisältävä sivu
                 # parsitaan kirjan kuvauksen sisältävän sivun html
                 kirjaSivu = self.haeSivu( elementti['kirjaURL'] )
-                kirjaTiedot = self.käsitteleKirjaSivu( kirjaSivu, elementti['kirjaURL'] )
+                kirjaTiedot = KirjaSivu( kirjaSivu, elementti['kirjaURL'] ).käsitteleKirjaSivu()
                 self.kirjoita( kirjaTiedot )
     
         # valmista tuli, suljetaan tiedosto
@@ -64,27 +66,6 @@ class UutuusHaku():
                 tulos['kirjaURL'] = elementti.a['href']
                 yield tulos
                         
-    def käsitteleKirjaSivu( self, kirjaSivu, url ):
-        # tallennetaan kirjan tiedot sanakirjaan
-        kirja = { 'url': url }
-        kirja['id'] = url.split( '/' )[-2]
-        # kirjan nimi on ensimmäisessä ykköstason otsikossa
-        kirja['nimi'] = kirjaSivu.h1.string.strip()
-        # kuvaus on sivun ensimmäisessä tekstikappaleessa
-        kirja['kuvaus'] = kirjaSivu.p.get_text()
-        taulukko = kirjaSivu.table
-        td = taulukko.find( 'td', text = 'Tekijä' )
-        if td != None:
-            kirja['tekijä'] = td.next_sibling.string
-            
-        else:
-            kirja['tekijä'] = ''
-            
-        pohja = '''{nimi} / {tekijä} {id}
-{url}
-
-{kuvaus}'''
-        return pohja.format( **kirja )
         
 if __name__ == '__main__':
     haku = UutuusHaku( 'https://www.celianet.fi/kirjavinkit/uutuuskirjat-aikuisille/', 'uutuudet.txt' )
