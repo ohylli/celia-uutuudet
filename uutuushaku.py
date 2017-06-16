@@ -60,13 +60,11 @@ class Uutuusluettelo():
                 yield { 'tyyppi': 'kategoria', 'kategoria': kategoria }
                 
             elif elementti.name == 'p':
-                tulos = { 'tyyppi': 'linkki' }
-                # kappaleessa  on myös linkki kirjan kuvauksen sisältävälle sivulle
-                # otetaan osoite talteen
-                tulos['kirjaURL'] = elementti.a['href']
-                yield tulos
+                for linkki in elementti.find_all( 'a' ):
+                    tulos = { 'tyyppi': 'linkki' }
+                    tulos['kirjaURL'] = linkki['href']
+                    yield tulos
                         
-        
 if __name__ == '__main__':
     haku = Uutuusluettelo( 'https://www.celianet.fi/kirjavinkit/uutuuskirjat-aikuisille/', 'uutuudet.txt' )
     haku.haeKirjat()
