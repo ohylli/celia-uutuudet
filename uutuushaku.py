@@ -2,5 +2,19 @@
 
 from uutuusluettelo import Uutuusluettelo
 
-haku = Uutuusluettelo( 'https://www.celianet.fi/kirjavinkit/uutuuskirjat-aikuisille/', 'uutuudet.txt' )
-haku.haeKirjat()
+luettelot = [
+    {
+        'url': 'https://www.celianet.fi/kirjavinkit/uutuuskirjat-aikuisille/',
+        'tiedosto': 'aikuisten_uutuudet.txt',
+        'luettelo': Uutuusluettelo
+    },
+    {
+        'url': 'https://www.celianet.fi/kirjavinkit/lasten-uutuuskirjat/',
+        'tiedosto': 'lasten_uutuudet.txt',
+        'luettelo': Uutuusluettelo
+    }
+]
+
+for luettelo in luettelot:
+    hakija = luettelo['luettelo']( luettelo['url'], luettelo['tiedosto'] )
+    hakija.haeKirjat()
