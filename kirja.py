@@ -33,7 +33,7 @@ lukija: {lukija}, kesto: {kesto}''',
         ulkoasu = self.haeTaulukosta( 'Ulkoasu' )
         tyyppi, tyyppiTiedot = ulkoasu.split( maxsplit = 1 )
         
-        if tyyppi == 'äänikirja' or tyyppi == 'DaisyTrio':
+        if tyyppi in [ 'äänikirja', 'DaisyTrio', 'talbok' ]:
             tyyppi = 'äänikirja'
             kirja['lukija'] = self.haeTaulukosta( 'Lukija', 'ei tiedossa' )
             kirja['kesto'] = self.haeTaulukosta( 'Kesto', 'ei tiedossa' )
