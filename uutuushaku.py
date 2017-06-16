@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 from kirja import KirjaSivu
 
-class UutuusHaku():
+class Uutuusluettelo():
     
     def __init__( self, luetteloUrl, tiedostonimi ):
         # uutuudet sivun osoite
@@ -68,5 +68,5 @@ class UutuusHaku():
                         
         
 if __name__ == '__main__':
-    haku = UutuusHaku( 'https://www.celianet.fi/kirjavinkit/uutuuskirjat-aikuisille/', 'uutuudet.txt' )
+    haku = Uutuusluettelo( 'https://www.celianet.fi/kirjavinkit/uutuuskirjat-aikuisille/', 'uutuudet.txt' )
     haku.haeKirjat()
