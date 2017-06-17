@@ -52,7 +52,7 @@ class Uutuusluettelo():
         # lähtien ensimmäisestä kolmos tason ) otsikosta (h3, joka on sivun pääsisältö alueella
         # tarkemmin käsitellään ensimmäistä h3:a edeltävää elementtiä seuraavat saman tason elementit
         # näin ensimmäinenkin h3 tulee mukaan
-        for elementti in self.uutuudetSivu.find( role='main' ).h3.previous_sibling.next_siblings:
+        for elementti in self.ekaElementti().next_siblings:
             if elementti.name == 'h3':
                 # elementti on otsikko, jossa on uutuuskategorian nimi kuten jännityskirjallisuus tai pistekirjat
                 # otetaan otsikon teksti ja kirjoitetaan tiedostoon
@@ -64,3 +64,11 @@ class Uutuusluettelo():
                     tulos = { 'tyyppi': 'linkki' }
                     tulos['kirjaURL'] = linkki['href']
                     yield tulos
+                    
+    def ekaElementti( self ):
+        return self.uutuudetSivu.find( role='main' ).h3.previous_sibling
+        
+class NuortenUutuudet( Uutuusluettelo ):
+
+    def ekaElementti( self ):
+        return self.uutuudetSivu.find( role='main' ).find_all( 'h3', limit = 2 )[1].previous_sibling
