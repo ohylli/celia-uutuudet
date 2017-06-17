@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
+Ôªø# -*- coding: utf-8 -*-
 
-# luokat uutuusluetteloiden k‰sittelyyn
+# luokat uutuusluetteloiden k√§sittelyyn
 from uutuusluettelo import Uutuusluettelo, NuortenUutuudet
 
-# m‰‰ritet‰‰n mit‰ uutuusluetteloita k‰sitell‰‰n
-# luettelosta m‰‰ritet‰‰n osoite mist‰ uutuudet lˆytyv‰t
-# tiedosto, johon ne tallennetaan ja luokka, jonka instanssilla luettelo k‰sitell‰‰n
+# m√§√§ritet√§√§n mit√§ uutuusluetteloita k√§sitell√§√§n
+# luettelosta m√§√§ritet√§√§n osoite mist√§ uutuudet l√∂ytyv√§t
+# tiedosto, johon ne tallennetaan ja luokka, jonka instanssilla luettelo k√§sitell√§√§n
 luettelot = [
     {
         'url': 'https://www.celianet.fi/kirjavinkit/uutuuskirjat-aikuisille/',
@@ -24,9 +24,9 @@ luettelot = [
     }
 ]
 
-# k‰sitell‰‰n jokainen luettelo
+# k√§sitell√§√§n jokainen luettelo
 for luettelo in luettelot:
-    # luodaan luettelon k‰sittely luokasta instanssi, jolle annetaan osoite, josta luettelo lˆytyy ja nimi tiedostolle, johon uutuudet tallennetaan
+    # luodaan luettelon k√§sittely luokasta instanssi, jolle annetaan osoite, josta luettelo l√∂ytyy ja nimi tiedostolle, johon uutuudet tallennetaan
     hakija = luettelo['luettelo']( luettelo['url'], luettelo['tiedosto'] )
     # haetaan kirjat ja tallennetaan tiedostoon
     hakija.haeKirjat()
