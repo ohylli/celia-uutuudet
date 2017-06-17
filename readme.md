@@ -1,6 +1,6 @@
 # Celia uutuudet
 
-Celia uutuudet on työkalu tekstimuotoisten uutuuskirjaluetteloiden luomiseen [Celia kirjaston](http://www.celia.fi) nettisivuilta löytyvästä  uutuusluetteloista.
+Celia uutuudet on työkalu tekstimuotoisten uutuuskirjaluetteloiden luomiseen [Celia kirjaston](http://www.celia.fi) nettisivuilta löytyvistä  uutuusluetteloista.
 Sivustolla olevat uutuusluettelot eivät sisällä suoraan kirjojen kuvauksia, vaan ne joutuu katsomaan erikseen linkin takana olevalta sivulta. Jotkut käyttäjät kokevat tällaisen uutuusluettelon
 hankalaksi. Tämä työkalu luo eri uutuusluettelosivuista uutuusluettelon tekstitiedostoon, joka sisältää kirjojen kuvaukset.
 
