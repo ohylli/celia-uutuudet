@@ -56,11 +56,17 @@ class Uutuusluettelo():
         
             elif elementti['tyyppi'] == 'linkki':
                 # elementti on linkki yksittäisen kirjan tiedot sivulle
+                kirjaUrl = elementti['kirjaURL']
+                if '/sv/' in kirjaUrl:
+                    # luettelossa on linkki ruotsin kieliselle kirjan tiedot sivulle. jätetään käsittelemättä
+                    # yksi tällainen tuli kerran vastaan. jos näitä tulee enemmän pitänee tehdä käsittely myös ruotsin kieliselle sivulle
+                    break
+                    
                 # haetaan kirjan tiedot sisältävä sivu
-                kirjaSivu = self.haeSivu( elementti['kirjaURL'] )
+                kirjaSivu = self.haeSivu( kirjaUrl )
                 # luodaan KirjaSivu olio käsittelemään kirjan tiedot
                 # haetaan KirjaSivulta kirjan tiedot tekstimuodossa
-                kirjaTiedot = KirjaSivu( kirjaSivu, elementti['kirjaURL'] ).käsitteleKirjaSivu()
+                kirjaTiedot = KirjaSivu( kirjaSivu, kirjaUrl ).käsitteleKirjaSivu()
                 # tallennetaan tiedot tiedostoon
                 self.kirjoita( kirjaTiedot )
     
@@ -78,7 +84,7 @@ class Uutuusluettelo():
         # lähtien ensimmäisestä kiinnostavasta elementistä, joka haetaan omalla metodillaan
         # käsitellään tätä elementtiä seuraavat saman tason elementit, jotka ovat joko otsikoita tai tekstikappaleita
         for elementti in self.ekaElementti().next_siblings:
-            if elementti.name == 'h3':
+            if elementti.name in [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ]:
                 # elementti on otsikko, jossa on uutuuskategorian nimi kuten jännityskirjallisuus tai pistekirjat
                 # otetaan otsikon teksti 
                 kategoria = elementti.get_text() 
@@ -106,5 +112,5 @@ class NuortenUutuudet( Uutuusluettelo ):
 
     def ekaElementti( self ):
         """Metodi ensimmäisen käsiteltävän elementin hakuun."""
-        # haetaan sivun pääosion toista kolmostason otsikkoa edeltävä elementti
-        return self.uutuudetSivu.find( role='main' ).find_all( 'h3', limit = 2 )[1].previous_sibling
+        # haetaan sivun pääosion toista kakkostason otsikkoa edeltävä elementti
+        return self.uutuudetSivu.find( role='main' ).find_all( 'h2', limit = 2 )[1].previous_sibling
