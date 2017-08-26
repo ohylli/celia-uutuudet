@@ -47,3 +47,7 @@ Ohjelma koostuu kolmesta lähdekooditiedostosta:
 
 Pääohjelma luo eri uutuusluettelosivujen käsittelemiseen oman Uutuusluettelo tai sen aliluokan instanssin. Uutuusluettelo instanssi käy annetun uutuusluettelo sivun läpi kirjoittaen sen sisältöä annetun nimiseen tekstitiedostoon.
 Uutuusluettelo käyttää KirjaSivu luokan instansseja yksittäisen kirjan tiedot sisältävien sivujen käsittelyyn eli kirjan tietojen hakemiseen sivulta.
+
+## Tunnetut virheet
+
+Nuorten uutuusluettelosivun käsittely ei tällä hetkellä toimi oikein.
