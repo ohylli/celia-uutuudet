@@ -36,7 +36,15 @@ lukija: {lukija}, kesto: {kesto}''',
         # kirjan nimi on ensimmäisessä ykköstason otsikossa
         kirja['nimi'] = self.sivu.h1.string.strip()
         # kuvaus on sivun ensimmäisessä tekstikappaleessa
-        kirja['kuvaus'] = self.sivu.p.get_text()
+        kuvausKappale = self.sivu.p
+        if kuvausKappale != None:
+            kirja['kuvaus'] = kuvausKappale.get_text()
+            
+        else:
+            # kappaletta ei löydy, ei kuvausta
+            kirja['kuvaus'] = ''
+            
+        
         # tekijän nimi löytyy sivun taulukosta
         kirja['tekijä'] = self.haeTaulukosta( 'Tekijä', '' )
         # taulukon ulkoasu kohdassa mainitaan kirjan tyyppi
