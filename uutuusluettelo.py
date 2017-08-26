@@ -60,7 +60,7 @@ class Uutuusluettelo():
                 if '/sv/' in kirjaUrl:
                     # luettelossa on linkki ruotsin kieliselle kirjan tiedot sivulle. jätetään käsittelemättä
                     # yksi tällainen tuli kerran vastaan. jos näitä tulee enemmän pitänee tehdä käsittely myös ruotsin kieliselle sivulle
-                    break
+                    continue
                     
                 # haetaan kirjan tiedot sisältävä sivu
                 kirjaSivu = self.haeSivu( kirjaUrl )
