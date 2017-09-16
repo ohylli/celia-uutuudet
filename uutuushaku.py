@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 
 # luokat uutuusluetteloiden käsittelyyn
-from uutuusluettelo import Uutuusluettelo, NuortenUutuudet
+from uutuusluettelo import Uutuusluettelo
 
 # määritetään mitä uutuusluetteloita käsitellään
 # luettelosta määritetään osoite mistä uutuudet löytyvät
@@ -14,13 +14,8 @@ luettelot = [
     },
     {
         'url': 'https://www.celianet.fi/kirjavinkit/lasten-uutuuskirjat/',
-        'tiedosto': 'lasten_uutuudet.txt',
+        'tiedosto': 'lasten_ja_nuorten_uutuudet.txt',
         'luettelo': Uutuusluettelo
-    },
-    {
-        'url': 'https://www.celianet.fi/kirjavinkit/nuorten-uutuuskirjat/',
-        'tiedosto': 'nuorten_uutuudet.txt',
-        'luettelo': NuortenUutuudet
     }
 ]
 

@@ -1,5 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
-# sisältää luokat uutuusluettelosivun käsittelyyn
+# sisältää luokan uutuusluettelosivun käsittelyyn
 
 # kirjasto HTTP pyyntöjen tekemiseen eli nettisivun hakuun
 import requests
@@ -104,13 +104,3 @@ class Uutuusluettelo():
         """Metodi ensimmäisen sivun kiinnostavan elementin hakemiseen."""
         # haetaan sivun pääosion ensimmäistä kolmos tason otsikkoa edeltävä elementti
         return self.uutuudetSivu.find( role='main' ).h3.previous_sibling
-        
-class NuortenUutuudet( Uutuusluettelo ):
-    """Uutuusluettelon aliluokka nuorten uutuudetsivun käsittelyyn
-    
-    Sivun rakenne on hieman erilainen tarkemmin sen pääosiossa luettelo alkaa toisesta kolmostason otsikosta ei ensimmäisestä."""
-
-    def ekaElementti( self ):
-        """Metodi ensimmäisen käsiteltävän elementin hakuun."""
-        # haetaan sivun pääosion toista kakkostason otsikkoa edeltävä elementti
-        return self.uutuudetSivu.find( role='main' ).find_all( 'h2', limit = 2 )[1].previous_sibling
