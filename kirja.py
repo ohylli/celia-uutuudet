@@ -20,19 +20,18 @@ lukija: {lukija}, kesto: {kesto}''',
     'elektroninen': ''
     }
     
-    def __init__( self, sivu, url ):
-        """Luo KirjaSivu sivun valmiiksi parsitusta sisällöstä (BeautifulSoup olio) ja sivun osoitteesta."""
+    def __init__( self, sivu, url, kirjaId ):
+        """Luo KirjaSivu sivun valmiiksi parsitusta sisällöstä (BeautifulSoup olio), sivun osoitteesta ja kirjan id:sta."""
         self.sivu = sivu
         self.url = url
+        self.kirjaId = kirjaId
         # sivulla on taulukko, jossa on osa kirjan tiedoista
         self.tiedotTaulukko = self.sivu.table
         
     def käsitteleKirjaSivu( self ):
         """Käsittelee kirjan sivun ja palauttaa kirjan tiedot sisältävän merkkijonon, jonka voi kirjoittaa luetteloon."""
         # tallennetaan kirjan tiedot sanakirjaan
-        kirja = { 'url': self.url }
-        # kirjan id löytyy osoitteen lopusta polun viimeisenä kohtana
-        kirja['id'] = self.url.split( '/' )[-2]
+        kirja = { 'url': self.url, 'id': self.kirjaId  }        
         # kirjan nimi on ensimmäisessä ykköstason otsikossa
         kirja['nimi'] = self.sivu.h1.string.strip()
         # kuvaus on sivun ensimmäisessä tekstikappaleessa

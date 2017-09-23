@@ -35,15 +35,19 @@ Luo uutuusluettelot:
 
     python uutuushaku.py
     
-Jokaisesta uutuudet sivusta aikuisten uutuudet, nuorten uutuudet ja lasten uutuudet luodaan oma tekstitiedosto.
+Jokaisesta uutuudet sivusta aikuisten uutuudet, ja lasten ja nuorten uutuudet luodaan oma tekstitiedosto. Kun seuraavan kerran ajat ohjelman
+luotuihin uutuusluetteloihin tulee vain ne kirjat, jotka on lisätty uutuudet sivuille edellisen luettelon luontikerran jälkeen. Tiedostossa vanhat.json pidetään kirjaa edellisen ajokerran uusimmista kirjoista eri kategorioissa.
+Se ylikirjoitetaan ohjelman jokaisella ajokerralla, mutta siitä luodaan ennen ylikirjoitusta kopio tiedostoon edelliset_vanhat.json.
 
 ## Ohjelman rakenne
 
-Ohjelma koostuu kolmesta lähdekooditiedostosta:
+Ohjelma koostuu neljästä lähdekooditiedostosta:
 
 - uutuushaku.py: pääohjelma, joka aloittaa uutuuksien haun
-- uutuusluettelo.py: sisältää luokat uutuusluettelosivujen käsittelyyn
+- uutuusluettelo.py: sisältää luokan uutuusluettelosivujen käsittelyyn
 - kirja.py: sisältää luokan yksittäisen kirjan tiedot sisältävän sivun käsittelyyn
+- kasitellyt.py: sisältää Käsitellyt luokan, jolla pidetään kirjaa edellisellä kerralla jo käsitellyistä kirjoista
 
 Pääohjelma luo eri uutuusluettelosivujen käsittelemiseen oman Uutuusluettelo tai sen aliluokan instanssin. Uutuusluettelo instanssi käy annetun uutuusluettelo sivun läpi kirjoittaen sen sisältöä annetun nimiseen tekstitiedostoon.
 Uutuusluettelo käyttää KirjaSivu luokan instansseja yksittäisen kirjan tiedot sisältävien sivujen käsittelyyn eli kirjan tietojen hakemiseen sivulta.
+Uuutuusluettelo käyttää Käsitellyt luokkaa kirjan pitämiseen siitä, mitkä kirjat eri kategorioista on käsitelty edellisellä kerralla. Luokan avulla myös tallennetaan tämän hetken uusimmat kirjat seuraavaa kertaa varten.

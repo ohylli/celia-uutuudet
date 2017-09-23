@@ -14,12 +14,16 @@ class Uutuusluettelo():
     
     Luokka käy uutuudet sivun sisällön läpi luoden siitä tekstimuotoisen uutuusluettelon."""
     
-    def __init__( self, luetteloUrl, tiedostonimi ):
-        """Luo Utuusluettelo käsittelemään annettu uutuudet sivu, jonka sisältö tallennetaan annetun nimiseen tiedostoon."""
+    def __init__( self, luetteloUrl, tiedostonimi, vanhat ):
+        """Luo Uutuusluettelo käsittelemään annettu uutuudet sivu, jonka sisältö tallennetaan annetun nimiseen tiedostoon.
+        Vanhat oliosta luetaan viime kerralla uusimmat kirjat eri kategorioista, joita ja joiden jälkeisiä kategorian kirjoja ei luetteloida.
+        Tämän kertaiset uusimmat kirjat tallennetaan myös siihen"""
         # uutuudet sivun osoite
         self.url = luetteloUrl
         # avataan tiedosto tietojen tallentamista varten
         self.tiedosto = open( tiedostonimi, 'wb' )
+        self.vanhat = vanhat
+        self.tiedostonimi = tiedostonimi
 
     def kirjoita( self, sisältö ):
         """Kirjoittaa annetun sisällön luettelotiedostoon."""
@@ -51,22 +55,46 @@ class Uutuusluettelo():
         # tai yksittäisen kirjan tiedot sisältävän sivun osoitteen
         for elementti in self.käsitteleLuetteloSivu():
             if elementti['tyyppi'] == 'kategoria':
-                # elementti on kirjakategorian otsikko, joka kirjoitetaan luettelotiedostoon
-                self.kirjoita( elementti['kategoria'] )
+                # elementti on kirjakategorian otsikko, joka kirjoitetaan luettelotiedostoon, jos siinä on uusia kirjoja
+                kategoria = elementti['kategoria']
+                # mikä kirja oli edellisen luettelon luonti kerralla kategorian uusin
+                käsiteltyId = self.vanhat.hae( self.tiedostonimi, kategoria )
+                # kirjoitetaan otsikko vain jos kategoriasta löytyy kirja
+                kategorianEka = True
+                # kertoo onko käsittelyssä oleva kirja jo käsitelty edellisellä kerralla
+                vanhoja = False
         
-            elif elementti['tyyppi'] == 'linkki':
+            elif elementti['tyyppi'] == 'linkki' and not vanhoja:
                 # elementti on linkki yksittäisen kirjan tiedot sivulle
+                # kirjaa ei ole käsitelty edellisellä kerralla
                 kirjaUrl = elementti['kirjaURL']
                 if '/sv/' in kirjaUrl:
                     # luettelossa on linkki ruotsin kieliselle kirjan tiedot sivulle. jätetään käsittelemättä
                     # yksi tällainen tuli kerran vastaan. jos näitä tulee enemmän pitänee tehdä käsittely myös ruotsin kieliselle sivulle
                     continue
+                
+                # kirjan id löytyy osoitteen lopusta polun viimeisenä kohtana    
+                kirjaId = kirjaUrl.split( '/' )[-2]
+                # onko kirja käsitelty eli tallennettu jo edellisellä kerralla luotuun luetteloon
+                if käsiteltyId == kirjaId:
+                # loput kategorian kirjat jätetään käsittelemättä
+                    vanhoja = True
+                    continue
+                
+                if kategorianEka:
+                    # kirja on ensimmäinen kategoriassaan, joten kirjoitetaan kategorian otsikko luetteloon
+                    # seuraavat kategorian kirjat eivät enää ole ensimmäisiä
+                    kategorianEka = False
+                    self.kirjoita(  kategoria )
+                    # tallennetaan tämän kategorian ensimmäisen eli uusimman kirjan id seuraavaa kertaa varten
+                    # jotta sitä ja sitä seuraavia kategorian kirjoja ei tallenneta luetteloon
+                    self.vanhat.lisää( self.tiedostonimi, kategoria, kirjaId )
                     
                 # haetaan kirjan tiedot sisältävä sivu
                 kirjaSivu = self.haeSivu( kirjaUrl )
                 # luodaan KirjaSivu olio käsittelemään kirjan tiedot
                 # haetaan KirjaSivulta kirjan tiedot tekstimuodossa
-                kirjaTiedot = KirjaSivu( kirjaSivu, kirjaUrl ).käsitteleKirjaSivu()
+                kirjaTiedot = KirjaSivu( kirjaSivu, kirjaUrl, kirjaId  ).käsitteleKirjaSivu()
                 # tallennetaan tiedot tiedostoon
                 self.kirjoita( kirjaTiedot )
     

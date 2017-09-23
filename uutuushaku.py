@@ -1,7 +1,9 @@
 ﻿# -*- coding: utf-8 -*-
 
-# luokat uutuusluetteloiden käsittelyyn
+# luokka uutuusluetteloiden käsittelyyn
 from uutuusluettelo import Uutuusluettelo
+# luokka kirjanpitämiseen edellisen luettelon luonti kkerran kirjoista
+from kasitellyt import Käsitellyt
 
 # määritetään mitä uutuusluetteloita käsitellään
 # luettelosta määritetään osoite mistä uutuudet löytyvät
@@ -19,9 +21,17 @@ luettelot = [
     }
 ]
 
+# olio, josta luetaan edellisen luettelon luonti kerran uusimmat kirjat eri kategorioista, joita vanhempia
+# kirjoja ei lisätä nyt luotaviin luetteloihin.
+# tähän myös tallennetaan tällä hetkellä uusimmat kirjat eri kategorioista, jolloin niitä ei luetteloida ensi kerralla
+# tiedot luetaan ja tallennetaan json muodossa vanhat.json tiedostoon
+vanhat = Käsitellyt( "vanhat.json" )
 # käsitellään jokainen luettelo
 for luettelo in luettelot:
-    # luodaan luettelon käsittely luokasta instanssi, jolle annetaan osoite, josta luettelo löytyy ja nimi tiedostolle, johon uutuudet tallennetaan
-    hakija = luettelo['luettelo']( luettelo['url'], luettelo['tiedosto'] )
+    # luodaan luettelon käsittely luokasta instanssi, jolle annetaan osoite, josta luettelo löytyy, nimi tiedostolle, johon uutuudet tallennetaan, sekä tiedot käsitellyistä kirjoista
+    hakija = luettelo['luettelo']( luettelo['url'], luettelo['tiedosto'], vanhat )
     # haetaan kirjat ja tallennetaan tiedostoon
     hakija.haeKirjat()
+
+# tallennetaan tämän luettelon eri kategorioiden uusimmat seuraavaa kertaa varten    
+vanhat.tallenna()
