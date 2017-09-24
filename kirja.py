@@ -7,7 +7,6 @@ class KirjaSivu():
         # pohjaa käytetään pythonin merkkijonon format metodin kanssa
     pohja = '''{nimi} / {tekijä} {id} {tyyppiTiedot}
 {url}
-
 {kuvaus}'''
 
     # pohjat erityyppisten kirjojen (äänikirja, pistekirja, elektroninen kirja) erityis tiedoille
