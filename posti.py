@@ -4,6 +4,12 @@ from email.mime.text import MIMEText
 import smtplib
 import json
 
+# Luettelon alkuun liitettävä teksti
+alku = '''Tämä luettelo on luotu ja lähetetty automaattisesti, joten se saattaa sisältää virheitä. Luettelon luomiseen käytetyn ohjelman lähdekoodi on saatavissa osoitteessa:
+https://github.com/ohylli/celia-uutuudet
+
+'''
+
 class Postittaja():
     """Luokka uutuusluetteloiden lähettämiseen sähköpostilla."""
     
@@ -39,7 +45,7 @@ class Postittaja():
             
         tiedosto.close()
         # luodaan tekstimuotoinen lähetettävä viesti, jonka rungoksi asetetaan luettelon sisältö
-        viesti = MIMEText( runko, 'plain' )
+        viesti = MIMEText( alku +runko, 'plain' )
         # asetetaan viestin lähettäjä
         viesti['From'] = self.lähettäjä
         # asetetaan vastaanottajat. Yhdistetään vastaanottaja listan osoitteet yhdeksi merkkijonoksi pilkulla eroteltuna
