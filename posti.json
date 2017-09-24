@@ -1,0 +1,8 @@
+{
+    "lähettäjä": "mina@example.com",
+    "vastaanottajat": [ "sina@example.com" ],
+    "palvelin": "smtp.example.com",
+    "portti": 465,
+    "käyttäjä": "käyttäjä",
+    "salasana": "salasana123"
+}
