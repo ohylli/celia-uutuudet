@@ -33,6 +33,10 @@ class Postittaja():
         # luetaan uutuusluettelon sisältö tiedostosta
         tiedosto = open( luettelo['tiedosto'], 'r' )
         runko = tiedosto.read()
+        if len( runko ) == 0:
+            print( 'Luettelo {} on tyhjä eikä sitä postiteta.'.format( luettelo['tiedosto'] ))
+            return
+            
         tiedosto.close()
         # luodaan tekstimuotoinen lähetettävä viesti, jonka rungoksi asetetaan luettelon sisältö
         viesti = MIMEText( runko, 'plain' )
