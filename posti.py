@@ -19,9 +19,15 @@ class Postittaja():
         with open( 'posti.json', 'r', encoding = 'utf-8' ) as tiedosto:
             konfiguraatio = json.load( tiedosto )
             
-            # tallenna konfiguraation sisältö muuttujiin
+        # tallenna konfiguraation sisältö muuttujiin
         self.lähettäjä = konfiguraatio[ 'lähettäjä' ]
         self.vastaanottajat = konfiguraatio[ 'vastaanottajat' ]
+        if 'piilo_vastaanottajat' in konfiguraatio:
+            self.piiloVastaanottajat = konfiguraatio[ 'piilo_vastaanottajat' ]
+            
+        else:
+            self.piiloVastaanottajat = None
+            
         palvelinNimi = konfiguraatio['palvelin']
         portti = konfiguraatio[ 'portti' ]
         käyttäjä = konfiguraatio[ 'käyttäjä' ]
@@ -50,6 +56,10 @@ class Postittaja():
         viesti['From'] = self.lähettäjä
         # asetetaan vastaanottajat. Yhdistetään vastaanottaja listan osoitteet yhdeksi merkkijonoksi pilkulla eroteltuna
         viesti['To'] = ','.join( self.vastaanottajat )
+        # Jos on määritelty Bcc eli piilotetut vastaanottajat lisätään ne
+        if self.piiloVastaanottajat != None:
+            viesti['Bcc'] = ','.join( self.piiloVastaanottajat )
+            
         # asetetaan viestin otsikoksi luettelon otsikko
         viesti['Subject'] = luettelo['otsikko']
         # lähetetään viesti

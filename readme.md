@@ -45,6 +45,7 @@ Ohjelma voi lähetää uutuusluettelot myös sähköpostitse haluamillesi vastaa
 
 - lähettäjä: oma sähköpostiosoitteesi
 - vastaanottajat: lista vastaanottajien sähköpostiosoitteita
+- piilo_vastaanottajat: Lista vastaanottajia, joiden osoitteet eivät näy muille vastaanottajille eli jotka laitetaan viestin Bcc vastaanottajiksi. Tämä ei ole pakollinen kenttä.
 - palvelin: SMTP sähköpostipalvelimen osoite esim. Soneralla mail.inet.fi
 - portti: TCP portti, johon palvelimella yhdistetään
 - käyttäjä: Käyttäjätunnuksesi SMTP palvelimelle
@@ -69,4 +70,4 @@ Ohjelma koostuu viidestä lähdekooditiedostosta:
 
 Pääohjelma luo eri uutuusluettelosivujen käsittelemiseen oman Uutuusluettelo tai sen aliluokan instanssin. Uutuusluettelo instanssi käy annetun uutuusluettelo sivun läpi kirjoittaen sen sisältöä annetun nimiseen tekstitiedostoon.
 Uutuusluettelo käyttää KirjaSivu luokan instansseja yksittäisen kirjan tiedot sisältävien sivujen käsittelyyn eli kirjan tietojen hakemiseen sivulta.
-Uuutuusluettelo käyttää Käsitellyt luokkaa kirjan pitämiseen siitä, mitkä kirjat eri kategorioista on käsitelty edellisellä kerralla. Luokan avulla myös tallennetaan tämän hetken uusimmat kirjat seuraavaa kertaa varten. Pääohjelma käyttää Postittaja luokkaa luetteloiden lähettämiseen sähköpostilla.
+uutuusluettelo käyttää Käsitellyt luokkaa kirjan pitämiseen siitä, mitkä kirjat eri kategorioista on käsitelty edellisellä kerralla. Luokan avulla myös tallennetaan tämän hetken uusimmat kirjat seuraavaa kertaa varten. Pääohjelma käyttää Postittaja luokkaa luetteloiden lähettämiseen sähköpostilla.
