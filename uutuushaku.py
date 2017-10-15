@@ -3,6 +3,7 @@
 
 # moduuli komentoriviparametrien käsittelyyn
 import argparse
+import time
 
 # luokka uutuusluetteloiden käsittelyyn
 from uutuusluettelo import Uutuusluettelo
@@ -80,3 +81,6 @@ if parametrit.posti in  [ 'kyllä', 'kysy', 'heti' ]:
         if parametrit.posti in [ 'kyllä', 'heti' ]  or kysyPostitetaanko( luettelo ):
             print( 'Postitetaan {}'.format( luettelo['otsikko'] ))
             postittaja.postita( luettelo )
+            # odotetaan 5 sekuntia ennen seuraava postitusta
+            # nopeasti peräkkäin lähetettävät viestit saattavat aiheuttaa ongelmia THP:n sähköpostilistoilla
+            time.sleep( 5 )

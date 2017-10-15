@@ -42,25 +42,28 @@ class Postittaja():
             else:
                 self.piiloVastaanottajat = None
             
-            palvelinNimi = konfiguraatio['palvelin']
-            portti = konfiguraatio[ 'portti' ]
-            käyttäjä = konfiguraatio[ 'käyttäjä' ]
-            salasana = konfiguraatio[ 'salasana' ]
+            self.palvelinNimi = konfiguraatio['palvelin']
+            self.portti = konfiguraatio[ 'portti' ]
+            self.käyttäjä = konfiguraatio[ 'käyttäjä' ]
+            self.salasana = konfiguraatio[ 'salasana' ]
             
         except KeyError as virhe:
             print( '{} puuttuu postittajan konfiguraatiotiedostosta.'.format( virhe.args[0] ))
             quit()
-        
+            
+    def luoPostiPalvelin( self ):
+        '''Luo ja palauta SMTP palvelinasiakas luettelon lähetystä varten  konfiguraatiotiedoston asetusten pohjalta.'''
         # Luo asiakas sähköpostipalvelimelle, joka on määritelty konfiguraatiotiedostossa
         # käytetään heti SSL salattua yhteyttä
         # ainakin soneran palvelin mail.inet.fi vaatii heti salatun yhteyden eli ei voida luoda salaamatonta asiakasta ja sitten käynnistää salattua yhteyttä
         try:
-            self.palvelin = smtplib.SMTP_SSL( palvelinNimi, portti )
+            palvelin = smtplib.SMTP_SSL( self.palvelinNimi, self.portti )
             # kirjaudutaan palvelimelle konfiguraatiossa olleilla käyttäjätunnuksella ja salasanalla
-            self.palvelin.login( käyttäjä, salasana )
+            palvelin.login( self.käyttäjä, self.salasana )
+            return palvelin
             
         except ConnectionRefusedError:
-            print( 'Posti palvelin kieltäytyi yhteydestä. Portti voi olla väärä.' )
+            print( 'Postipalvelin kieltäytyi yhteydestä. Portti voi olla väärä.' )
             quit()
             
         except socket.gaierror:
@@ -98,5 +101,7 @@ class Postittaja():
             
         # asetetaan viestin otsikoksi luettelon otsikko
         viesti['Subject'] = luettelo['otsikko']
+        # luodaan SMTP palvelinyhteys luettelon lähetystä varten
+        palvelin =  self.luoPostiPalvelin()
         # lähetetään viesti
-        self.palvelin.send_message( viesti )
+        palvelin.send_message( viesti )
