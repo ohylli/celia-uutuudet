@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import re
+
 class KirjaSivu():
     """Luokka yksittäisen kirjan tiedot sisältävän sivun käsittelyyn."""
 
@@ -44,7 +46,11 @@ lukija: {lukija}, kesto: {kesto}''',
             
         
         # tekijän nimi löytyy sivun taulukosta
-        kirja['tekijä'] = self.haeTaulukosta( 'Tekijä', '' )
+        tekijä = self.haeTaulukosta( 'Tekijä', '' ).strip()
+        # poistetaan tekijän lopusta turha ', kirjoittaja.' merkkijono korvaamalla se pisteellä
+        # säännöllinen  lauseke, joka edustaa korvattavaa merkkijonoa
+        korvattava = r', kirjoittaja.$'
+        kirja['tekijä'] = re.sub( korvattava, '.', tekijä, 1 )
         # taulukon ulkoasu kohdassa mainitaan kirjan tyyppi
         ulkoasu = self.haeTaulukosta( 'Ulkoasu' )
         # tyyppi saadaan ulkoasun ensimmäisestä sanasta, loput ovat tyyppikohtaista lisätietoa
