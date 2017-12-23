@@ -40,7 +40,7 @@ lukija: {lukija}, kesto: {kesto}''',
             
         else:
             # kappaletta ei löydy, ei kuvausta
-            kirja['kuvaus'] = ''
+            kirja['kuvaus'] = 'Kirjan kuvaus ei saatavilla.'
             
         
         # tekijän nimi löytyy sivun taulukosta
