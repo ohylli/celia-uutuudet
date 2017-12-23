@@ -11,6 +11,9 @@ class Käsitellyt():
     def __init__( self, tiedostoNimi ):
         """Luo perustuen annetun nimiseen tiedostoon, josta tiedot luetaan ja johon ne tallennetaan."""
         self.tiedostoNimi = tiedostoNimi
+        # pidetään kirjaa siitä onko käsitellyihin  lisätty mitään
+        # jos ei ole ei tallennettaessa kirjoiteta tiedostoon
+        self.lisäyksiä = False
         try:
             # yritä lukea tiedot JSON muodossa tiedostosta
             tiedosto = open( tiedostoNimi, 'r', encoding = 'utf-8' )
@@ -28,6 +31,7 @@ class Käsitellyt():
             
     def lisää( self, luetteloNimi, kategoria, kirjaId ):
         """Lisää kirjaID liittyen tietyn luettelon tiettyyn kategoriaan."""
+        self.lisäyksiä = True
         luettelo = self.vanhat.get( luetteloNimi )
         if luettelo == None:
             # annettuun luetteloon ei vielä ole tietoja
@@ -47,7 +51,11 @@ class Käsitellyt():
     def tallenna( self ):
         """Tallenna tämän hetkiset tiedot tiedostoon.
         
-        Luo myös kopion tiedostosta, josta tämä olio uotiin. Alkuperäinen tiedosto ylikirjoitetaan."""
+        Luo myös kopion tiedostosta, josta tämä olio uotiin. Alkuperäinen tiedosto ylikirjoitetaan.
+        Jos yhtään lisäyksiä ei ole tehty ei tallennusta ja vanhan kopiointia tehdä."""
+        if not self.lisäyksiä:
+            return
+            
         try:
             # tehdään kopio tiedostosta
             shutil.copyfile( self.tiedostoNimi, 'edelliset_' +self.tiedostoNimi )
