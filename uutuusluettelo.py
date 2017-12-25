@@ -14,14 +14,15 @@ class Uutuusluettelo():
     
     Luokka käy uutuudet sivun sisällön läpi luoden siitä tekstimuotoisen uutuusluettelon."""
     
-    def __init__( self, luetteloUrl, tiedostonimi, vanhat ):
+    def __init__( self, luetteloUrl, tiedostonimi, vanhat, hakemisto ):
         """Luo Uutuusluettelo käsittelemään annettu uutuudet sivu, jonka sisältö tallennetaan annetun nimiseen tiedostoon.
         Vanhat oliosta luetaan viime kerralla uusimmat kirjat eri kategorioista, joita ja joiden jälkeisiä kategorian kirjoja ei luetteloida.
-        Tämän kertaiset uusimmat kirjat tallennetaan myös siihen"""
+        Tämän kertaiset uusimmat kirjat tallennetaan myös siihen
+        Luettelo tiedosto tallennetaan annettuun hakemistoon."""
         # uutuudet sivun osoite
         self.url = luetteloUrl
         # avataan tiedosto tietojen tallentamista varten
-        self.tiedosto = open( tiedostonimi, 'wb' )
+        self.tiedosto = open( hakemisto +tiedostonimi, 'wb' )
         self.vanhat = vanhat
         self.tiedostonimi = tiedostonimi
 

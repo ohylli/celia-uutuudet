@@ -4,6 +4,8 @@
 # moduuli komentoriviparametrien käsittelyyn
 import argparse
 import time
+import os
+
 
 # luokka uutuusluetteloiden käsittelyyn
 from uutuusluettelo import Uutuusluettelo
@@ -35,6 +37,8 @@ komentorivi.add_argument( '-p', '--posti',
 # käsitellään komentoriviparametrit
 parametrit = komentorivi.parse_args()
 
+# hakemisto josta ohjelman tiedostot luetaan. Hakemisto on tämän koodi tiedoston hakemisto.
+hakemisto = os.path.dirname( os.path.abspath( __file__ )) +'/'
 # määritetään mitä uutuusluetteloita käsitellään
 # luettelosta määritetään osoite mistä uutuudet löytyvät
 # tiedosto, johon ne tallennetaan,  luettelon nimi ja luokka, jonka instanssilla luettelo käsitellään
@@ -59,12 +63,13 @@ if parametrit.posti != 'heti':
     # kirjoja ei lisätä nyt luotaviin luetteloihin.
     # tähän myös tallennetaan tällä hetkellä uusimmat kirjat eri kategorioista, jolloin niitä ei luetteloida ensi kerralla
     # tiedot luetaan ja tallennetaan json muodossa vanhat.json tiedostoon
-    vanhat = Käsitellyt( "vanhat.json" )
+    vanhat = Käsitellyt( hakemisto +"vanhat.json" )
     # käsitellään jokainen luettelo
     print( 'luodaan luetteloita.' )
     for luettelo in luettelot:
-        # luodaan luettelon käsittely luokasta instanssi, jolle annetaan osoite, josta luettelo löytyy, nimi tiedostolle, johon uutuudet tallennetaan, sekä tiedot käsitellyistä kirjoista
-        hakija = luettelo['luettelo']( luettelo['url'], luettelo['tiedosto'], vanhat )
+        # luodaan luettelon käsittely luokasta instanssi, jolle annetaan osoite, josta luettelo löytyy, nimi tiedostolle, johon uutuudet tallennetaan,  tiedot käsitellyistä kirjoista, 
+        # sekä hakemisto luettelotiedostolle
+        hakija = luettelo['luettelo']( luettelo['url'], luettelo['tiedosto'], vanhat, hakemisto )
         # haetaan kirjat ja tallennetaan tiedostoon
         hakija.haeKirjat()
         
@@ -74,7 +79,7 @@ if parametrit.posti != 'heti':
 # postitetaan luettelot jos käyttäjä niin halusi
 if parametrit.posti in  [ 'kyllä', 'kysy', 'heti' ]:
     # luodaan postin lähettäjä konfiguraation pohjalta
-    postittaja = Postittaja()
+    postittaja = Postittaja( hakemisto )
     # käydään luettelot läpi
     for luettelo in luettelot:
         # postitetaan luettelo heti jos käyttäjä niin halusi muuten kysytään jokaisen luettelon kohdalla haluaako käyttäjä sen lähettää

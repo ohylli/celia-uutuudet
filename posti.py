@@ -17,11 +17,12 @@ https://github.com/ohylli/celia-uutuudet
 class Postittaja():
     """Luokka uutuusluetteloiden lähettämiseen sähköpostilla."""
     
-    def __init__( self ):
-        '''Luo Postittaja posti.json konfiguraatio tiedoston määräämillä asetuksilla.'''
+    def __init__( self, hakemisto ):
+        '''Luo Postittaja posti.json konfiguraatio tiedoston määräämillä asetuksilla. Konfiguraatio ja luettelot luetaan annetusta hakemisto polku merkkijonosta.'''
+        self.hakemisto = hakemisto
         # lue konfiguraatio tiedostosta ja muunna json python sanakirjaksi
         try:
-            with open( KONFIGURAATIO_TIEDOSTO, 'r', encoding = 'utf-8' ) as tiedosto:
+            with open( self.hakemisto +KONFIGURAATIO_TIEDOSTO, 'r', encoding = 'utf-8' ) as tiedosto:
                 konfiguraatio = json.load( tiedosto )
         
         except FileNotFoundError:
@@ -78,7 +79,7 @@ class Postittaja():
         '''Postittaa parametrina saadun luettelo sanakirjan määrittämän uutuusluettelon.'''
         # luetaan uutuusluettelon sisältö tiedostosta
         try:
-            with open( luettelo['tiedosto'], 'r' ) as tiedosto:
+            with open( self.hakemisto +luettelo['tiedosto'], 'r' ) as tiedosto:
                 runko = tiedosto.read()
                 
         except FileNotFoundError:
