@@ -5,7 +5,7 @@
 import argparse
 import time
 import os
-
+import logging
 
 # luokka uutuusluetteloiden käsittelyyn
 from uutuusluettelo import Uutuusluettelo
@@ -39,6 +39,22 @@ parametrit = komentorivi.parse_args()
 
 # hakemisto josta ohjelman tiedostot luetaan. Hakemisto on tämän koodi tiedoston hakemisto.
 hakemisto = os.path.dirname( os.path.abspath( __file__ )) +'/'
+
+# määritellään ohjelma kirjoittamaan tulosteitaan konsolille ja tiedostoon
+# käytetään logging moduulia. Luodaan Logger olio, jota
+# käytetään tulosteiden kirjoittamiseen. Määritetään käsittelijät (handler) kirjoitamaan tiedostoon ja konsolille.
+loki = logging.getLogger( 'celia-uutuudet' )
+# tulostetaan kaikki mahdolliset loki viestit
+loki.setLevel( logging.DEBUG )
+konsoliKäsittelijä = logging.StreamHandler()
+loki.addHandler( konsoliKäsittelijä )
+tiedostoKäsittelijä = logging.FileHandler( hakemisto +'uutuushaku.log' )
+# oletuksena konsolille tulostuu vain viesti. Tiedostoon haluamme myös ajan ja tyypin.
+# Tulostettavan viestin muoto määritellään Formatter oliolla
+muotoilija = logging.Formatter('%(asctime)s %(levelname)s - %(message)s')
+tiedostoKäsittelijä.setFormatter( muotoilija )
+loki.addHandler( tiedostoKäsittelijä )
+
 # määritetään mitä uutuusluetteloita käsitellään
 # luettelosta määritetään osoite mistä uutuudet löytyvät
 # tiedosto, johon ne tallennetaan,  luettelon nimi ja luokka, jonka instanssilla luettelo käsitellään
@@ -65,7 +81,7 @@ if parametrit.posti != 'heti':
     # tiedot luetaan ja tallennetaan json muodossa vanhat.json tiedostoon
     vanhat = Käsitellyt( hakemisto +"vanhat.json" )
     # käsitellään jokainen luettelo
-    print( 'luodaan luetteloita.' )
+    loki.info( 'luodaan luetteloita.' )
     for luettelo in luettelot:
         # luodaan luettelon käsittely luokasta instanssi, jolle annetaan osoite, josta luettelo löytyy, nimi tiedostolle, johon uutuudet tallennetaan,  tiedot käsitellyistä kirjoista, 
         # sekä hakemisto luettelotiedostolle
@@ -84,7 +100,7 @@ if parametrit.posti in  [ 'kyllä', 'kysy', 'heti' ]:
     for luettelo in luettelot:
         # postitetaan luettelo heti jos käyttäjä niin halusi muuten kysytään jokaisen luettelon kohdalla haluaako käyttäjä sen lähettää
         if parametrit.posti in [ 'kyllä', 'heti' ]  or kysyPostitetaanko( luettelo ):
-            print( 'Postitetaan {}'.format( luettelo['otsikko'] ))
+            loki.info( 'Postitetaan {}'.format( luettelo['otsikko'] ))
             postittaja.postita( luettelo )
             # odotetaan 5 sekuntia ennen seuraava postitusta
             # nopeasti peräkkäin lähetettävät viestit saattavat aiheuttaa ongelmia THP:n sähköpostilistoilla

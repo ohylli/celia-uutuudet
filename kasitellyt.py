@@ -2,6 +2,10 @@
 
 import json
 import shutil
+import logging
+
+# tulosteiden kirjoittamiseen
+loki = logging.getLogger( 'celia-uutuudet' )
 
 class Käsitellyt():
     """Luokka, jonka avulla pidetään kirjaa siitä, mitkä kirjat on jo edellisellä luettelon luontikerralla käsitelty
@@ -26,7 +30,7 @@ class Käsitellyt():
             self.vanhat = {}
             
         except json.decoder.JSONDecodeError:
-            print( 'Käsiteltyjen kirjojen tiedoston lukeminen epäonnistui: ei validi json tiedosto.' )
+            loki.error( 'Käsiteltyjen kirjojen tiedoston lukeminen epäonnistui: ei validi json tiedosto.' )
             quit()
             
     def lisää( self, luetteloNimi, kategoria, kirjaId ):

@@ -4,6 +4,10 @@ from email.mime.text import MIMEText
 import smtplib
 import json
 import socket
+import logging
+
+# logger lokin kirjoitusta varten
+loki = logging.getLogger( 'celia-uutuudet' )
 
 # konfiguraatio tiedoston nimi
 KONFIGURAATIO_TIEDOSTO = 'posti.json'
@@ -26,11 +30,11 @@ class Postittaja():
                 konfiguraatio = json.load( tiedosto )
         
         except FileNotFoundError:
-            print( 'Postittajan konfiguraatio tiedostoa {} ei löytynyt.'.format( KONFIGURAATIO_TIEDOSTO ))
+            loki.error( 'Postittajan konfiguraatio tiedostoa {} ei löytynyt.'.format( KONFIGURAATIO_TIEDOSTO ))
             quit()
             
         except json.decoder.JSONDecodeError as virhe:
-            print( 'Virhe postittajan konfiguraatio tiedoston käsittelyssä: ' +str( virhe ))
+            loki.error( 'Virhe postittajan konfiguraatio tiedoston käsittelyssä: ' +str( virhe ))
             quit()
         
         try:
@@ -49,7 +53,7 @@ class Postittaja():
             self.salasana = konfiguraatio[ 'salasana' ]
             
         except KeyError as virhe:
-            print( '{} puuttuu postittajan konfiguraatiotiedostosta.'.format( virhe.args[0] ))
+            loki.error( '{} puuttuu postittajan konfiguraatiotiedostosta.'.format( virhe.args[0] ))
             quit()
             
     def luoPostiPalvelin( self ):
@@ -64,15 +68,15 @@ class Postittaja():
             return palvelin
             
         except ConnectionRefusedError:
-            print( 'Postipalvelin kieltäytyi yhteydestä. Portti voi olla väärä.' )
+            loki.error( 'Postipalvelin kieltäytyi yhteydestä. Portti voi olla väärä.' )
             quit()
             
         except socket.gaierror:
-            print( 'Yhteys postipalvelimeen epäonnistui. Tarkista, että palvelimen osoite on oikea.' )
+            loki.error( 'Yhteys postipalvelimeen epäonnistui. Tarkista, että palvelimen osoite on oikea.' )
             quit()
             
         except smtplib.SMTPAuthenticationError:
-            print( 'Kirjautuminen postipalvelimelle ei onnistunut. Tarkista käyttäjätunnus ja salasana.' )
+            loki.error( 'Kirjautuminen postipalvelimelle ei onnistunut. Tarkista käyttäjätunnus ja salasana.' )
             quit()
         
     def postita( self, luettelo ):
@@ -83,11 +87,11 @@ class Postittaja():
                 runko = tiedosto.read()
                 
         except FileNotFoundError:
-                print( 'Postittaja ei löytänyt luettelotiedostoa {}.'.format( luettelo['tiedosto'] ))
+                loki.error( 'Postittaja ei löytänyt luettelotiedostoa {}.'.format( luettelo['tiedosto'] ))
                 return
                 
         if len( runko ) == 0:
-            print( 'Luettelo {} on tyhjä eikä sitä postiteta.'.format( luettelo['tiedosto'] ))
+            loki.info( 'Luettelo {} on tyhjä eikä sitä postiteta.'.format( luettelo['tiedosto'] ))
             return
             
         # luodaan tekstimuotoinen lähetettävä viesti, jonka rungoksi asetetaan luettelon sisältö

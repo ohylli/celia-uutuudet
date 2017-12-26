@@ -1,6 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 # sisältää luokan uutuusluettelosivun käsittelyyn
 
+import logging
 # kirjasto HTTP pyyntöjen tekemiseen eli nettisivun hakuun
 import requests
 # kirjasto HTML:n parsimiseen
@@ -8,6 +9,9 @@ from bs4 import BeautifulSoup
 
 # luokka yksittäisen kirjan tiedot sisältävän sivun käsittelyyn
 from kirja import KirjaSivu
+
+# haetaan Logger tulosteita varten
+loki = logging.getLogger( 'celia-uutuudet' )
 
 class Uutuusluettelo():
     """Luokka uutuusluettelosivun käsittelyyn
