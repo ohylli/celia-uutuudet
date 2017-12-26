@@ -48,7 +48,7 @@ loki = logging.getLogger( 'celia-uutuudet' )
 loki.setLevel( logging.DEBUG )
 konsoliKäsittelijä = logging.StreamHandler()
 loki.addHandler( konsoliKäsittelijä )
-tiedostoKäsittelijä = logging.FileHandler( hakemisto +'uutuushaku.log' )
+tiedostoKäsittelijä = logging.FileHandler( hakemisto +'uutuushaku.log', encoding = 'utf-8' )
 # oletuksena konsolille tulostuu vain viesti. Tiedostoon haluamme myös ajan ja tyypin.
 # Tulostettavan viestin muoto määritellään Formatter oliolla
 muotoilija = logging.Formatter('%(asctime)s %(levelname)s - %(message)s')

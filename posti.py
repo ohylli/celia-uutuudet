@@ -83,7 +83,7 @@ class Postittaja():
         '''Postittaa parametrina saadun luettelo sanakirjan määrittämän uutuusluettelon.'''
         # luetaan uutuusluettelon sisältö tiedostosta
         try:
-            with open( self.hakemisto +luettelo['tiedosto'], 'r' ) as tiedosto:
+            with open( self.hakemisto +luettelo['tiedosto'], 'r', encoding = 'utf-8' ) as tiedosto:
                 runko = tiedosto.read()
                 
         except FileNotFoundError:
