@@ -44,7 +44,7 @@ class Uutuusluettelo():
         vastaus = requests.get( url )
         # tarkistetaan, että pyyntö onnistui
         if vastaus.status_code != 200:
-            print( 'Sivun ' +url +'  haku epäonnistui. HTTP status koodi: ' +str( vastaus.status_code ))
+            loki.error( 'Sivun ' +url +'  haku epäonnistui. HTTP status koodi: ' +str( vastaus.status_code ))
             # lopetetaan ohjelma
             quit()
 
