@@ -55,53 +55,59 @@ muotoilija = logging.Formatter('%(asctime)s %(levelname)s - %(message)s')
 tiedostoKäsittelijä.setFormatter( muotoilija )
 loki.addHandler( tiedostoKäsittelijä )
 
-# määritetään mitä uutuusluetteloita käsitellään
-# luettelosta määritetään osoite mistä uutuudet löytyvät
-# tiedosto, johon ne tallennetaan,  luettelon nimi ja luokka, jonka instanssilla luettelo käsitellään
-luettelot = [
-    {
-        'url': 'https://www.celianet.fi/kirjavinkit/uutuuskirjat-aikuisille/',
-        'otsikko': 'Aikuisten uutuudet',
-        'tiedosto': 'aikuisten_uutuudet.txt',
-        'luettelo': Uutuusluettelo
-    },
-    {
-        'url': 'https://www.celianet.fi/kirjavinkit/lasten-uutuuskirjat/',
-        'otsikko': 'Lasten ja nuorten uutuudet',
-        'tiedosto': 'lasten_ja_nuorten_uutuudet.txt',
-        'luettelo': Uutuusluettelo
-    }
-]
+# napataan ohjelman suorituksen aikana syntyvät odottamattomat poikkeukset
+try:
+    # määritetään mitä uutuusluetteloita käsitellään
+    # luettelosta määritetään osoite mistä uutuudet löytyvät
+    # tiedosto, johon ne tallennetaan,  luettelon nimi ja luokka, jonka instanssilla luettelo käsitellään
+    luettelot = [
+        {
+            'url': 'https://www.celianet.fi/kirjavinkit/uutuuskirjat-aikuisille/',
+            'otsikko': 'Aikuisten uutuudet',
+            'tiedosto': 'aikuisten_uutuudet.txt',
+            'luettelo': Uutuusluettelo
+        },
+        {
+            'url': 'https://www.celianet.fi/kirjavinkit/lasten-uutuuskirjat/',
+            'otsikko': 'Lasten ja nuorten uutuudet',
+            'tiedosto': 'lasten_ja_nuorten_uutuudet.txt',
+            'luettelo': Uutuusluettelo
+        }
+    ]
+    
+    # jos käyttäjä haluaa postittaa aikaisemmin luodut luettelot ei luoda niitä nyt
+    if parametrit.posti != 'heti':
+        # olio, josta luetaan edellisen luettelon luonti kerran uusimmat kirjat eri kategorioista, joita vanhempia
+        # kirjoja ei lisätä nyt luotaviin luetteloihin.
+        # tähän myös tallennetaan tällä hetkellä uusimmat kirjat eri kategorioista, jolloin niitä ei luetteloida ensi kerralla
+        # tiedot luetaan ja tallennetaan json muodossa vanhat.json tiedostoon
+        vanhat = Käsitellyt( hakemisto +"vanhat.json" )
+        # käsitellään jokainen luettelo
+        loki.info( 'luodaan luetteloita.' )
+        for luettelo in luettelot:
+            # luodaan luettelon käsittely luokasta instanssi, jolle annetaan osoite, josta luettelo löytyy, nimi tiedostolle, johon uutuudet tallennetaan,  tiedot käsitellyistä kirjoista, 
+            # sekä hakemisto luettelotiedostolle
+            hakija = luettelo['luettelo']( luettelo['url'], luettelo['tiedosto'], vanhat, hakemisto )
+            # haetaan kirjat ja tallennetaan tiedostoon
+            hakija.haeKirjat()
+            
+        # tallennetaan tämän luettelon eri kategorioiden uusimmat seuraavaa kertaa varten    
+        vanhat.tallenna()
+    
+    # postitetaan luettelot jos käyttäjä niin halusi
+    if parametrit.posti in  [ 'kyllä', 'kysy', 'heti' ]:
+        # luodaan postin lähettäjä konfiguraation pohjalta
+        postittaja = Postittaja( hakemisto )
+        # käydään luettelot läpi
+        for luettelo in luettelot:
+            # postitetaan luettelo heti jos käyttäjä niin halusi muuten kysytään jokaisen luettelon kohdalla haluaako käyttäjä sen lähettää
+            if parametrit.posti in [ 'kyllä', 'heti' ]  or kysyPostitetaanko( luettelo ):
+                loki.info( 'Postitetaan {}'.format( luettelo['otsikko'] ))
+                postittaja.postita( luettelo )
+                # odotetaan 5 sekuntia ennen seuraava postitusta
+                # nopeasti peräkkäin lähetettävät viestit saattavat aiheuttaa ongelmia THP:n sähköpostilistoilla
+                time.sleep( 5 )
 
-# jos käyttäjä haluaa postittaa aikaisemmin luodut luettelot ei luoda niitä nyt
-if parametrit.posti != 'heti':
-    # olio, josta luetaan edellisen luettelon luonti kerran uusimmat kirjat eri kategorioista, joita vanhempia
-    # kirjoja ei lisätä nyt luotaviin luetteloihin.
-    # tähän myös tallennetaan tällä hetkellä uusimmat kirjat eri kategorioista, jolloin niitä ei luetteloida ensi kerralla
-    # tiedot luetaan ja tallennetaan json muodossa vanhat.json tiedostoon
-    vanhat = Käsitellyt( hakemisto +"vanhat.json" )
-    # käsitellään jokainen luettelo
-    loki.info( 'luodaan luetteloita.' )
-    for luettelo in luettelot:
-        # luodaan luettelon käsittely luokasta instanssi, jolle annetaan osoite, josta luettelo löytyy, nimi tiedostolle, johon uutuudet tallennetaan,  tiedot käsitellyistä kirjoista, 
-        # sekä hakemisto luettelotiedostolle
-        hakija = luettelo['luettelo']( luettelo['url'], luettelo['tiedosto'], vanhat, hakemisto )
-        # haetaan kirjat ja tallennetaan tiedostoon
-        hakija.haeKirjat()
-        
-    # tallennetaan tämän luettelon eri kategorioiden uusimmat seuraavaa kertaa varten    
-    vanhat.tallenna()
-
-# postitetaan luettelot jos käyttäjä niin halusi
-if parametrit.posti in  [ 'kyllä', 'kysy', 'heti' ]:
-    # luodaan postin lähettäjä konfiguraation pohjalta
-    postittaja = Postittaja( hakemisto )
-    # käydään luettelot läpi
-    for luettelo in luettelot:
-        # postitetaan luettelo heti jos käyttäjä niin halusi muuten kysytään jokaisen luettelon kohdalla haluaako käyttäjä sen lähettää
-        if parametrit.posti in [ 'kyllä', 'heti' ]  or kysyPostitetaanko( luettelo ):
-            loki.info( 'Postitetaan {}'.format( luettelo['otsikko'] ))
-            postittaja.postita( luettelo )
-            # odotetaan 5 sekuntia ennen seuraava postitusta
-            # nopeasti peräkkäin lähetettävät viestit saattavat aiheuttaa ongelmia THP:n sähköpostilistoilla
-            time.sleep( 5 )
+except Exception as virhe:
+    # kirjoitetaan odottamattoman virheen tiedot lokiin
+    loki.exception( "tapahtui odottamaton virhe" ) 
